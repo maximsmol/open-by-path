@@ -2,7 +2,13 @@
 	"name": "open-by-path",
 	"displayName": "Open by Path",
 	"description": "",
-	"version": "0.0.1",
+	"version": "0.1.0",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:maximsmol/open-by-path.git"
+	},
+	"license": "MIT OR 0BSD OR CC0-1.0 OR Unlicense",
+	"publisher": "maximsmol",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
@@ -43,8 +49,10 @@
 		"eslint": "^8.6.0",
 		"glob": "^7.2.0",
 		"mocha": "^9.1.3",
+		"ovsx": "^0.3.0",
 		"ts-loader": "^9.2.6",
 		"typescript": "^4.5.4",
+		"vsce": "^2.6.7",
 		"webpack": "^5.66.0",
 		"webpack-cli": "^4.9.1"
 	},
