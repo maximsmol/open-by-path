@@ -1,62 +1,86 @@
 {
-	"name": "open-by-path",
-	"displayName": "Open by Path",
-	"description": "",
-	"version": "0.1.0",
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:maximsmol/open-by-path.git"
-	},
-	"license": "MIT OR 0BSD OR CC0-1.0 OR Unlicense",
-	"publisher": "maximsmol",
-	"engines": {
-		"vscode": "^1.64.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:open-by-path.open-by-path"
-	],
-	"main": "./dist/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "open-by-path.open-by-path",
-				"title": "Open by Path"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "yarn run package",
-		"compile": "webpack",
-		"watch": "webpack --watch",
-		"package": "webpack --mode production --devtool hidden-source-map",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p . -w --outDir out",
-		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.0.0",
-		"@types/node": "14.x",
-		"@types/vscode": "^1.64.0",
-		"@typescript-eslint/eslint-plugin": "^5.9.1",
-		"@typescript-eslint/parser": "^5.9.1",
-		"@vscode/test-electron": "^2.0.3",
-		"eslint": "^8.6.0",
-		"glob": "^7.2.0",
-		"mocha": "^9.1.3",
-		"ovsx": "^0.3.0",
-		"ts-loader": "^9.2.6",
-		"typescript": "^4.5.4",
-		"vsce": "^2.6.7",
-		"webpack": "^5.66.0",
-		"webpack-cli": "^4.9.1"
-	},
-	"dependencies": {
-		"fuse.js": "^6.5.3"
-	}
+  "name": "open-by-path",
+  "version": "0.2.0",
+  "displayName": "Open by Path",
+  "description": "Open a file by typing its path. Supports fuzzy autocomplete.",
+  "keywords": [
+    "open",
+    "path",
+    "fuzzy",
+    "completion",
+    "tab"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "galleryBanner": {},
+  "badges": [],
+  "extensionKind": [
+    "workspace"
+  ],
+  "icon": "",
+  "homepage": "https://github.com/maximsmol/open-by-path",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:maximsmol/open-by-path.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maximsmol/open-by-path/issues",
+    "email": "maximsmol@gmail.com"
+  },
+  "author": "Max Smolin <maximsmol@gmail.com> (https://twitter.com/maximsmol)",
+  "license": "MIT OR 0BSD OR CC0-1.0 OR Unlicense",
+  "publisher": "maximsmol",
+  "engines": {
+    "vscode": "^1.64.0"
+  },
+  "activationEvents": [
+    "onCommand:open-by-path.open-by-path"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "open-by-path.open-by-path",
+        "title": "Open by Path"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "open-by-path.open-by-path",
+        "key": "ctrl+shift+o"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "14.x",
+    "@types/vscode": "^1.64.0",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "@vscode/test-electron": "^2.0.3",
+    "eslint": "^8.6.0",
+    "glob": "^7.2.0",
+    "mocha": "^9.1.3",
+    "ovsx": "^0.3.0",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.4",
+    "vsce": "^2.6.7",
+    "webpack": "^5.66.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {}
 }
