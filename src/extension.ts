@@ -3,8 +3,8 @@ import * as vscode from "vscode";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as os from "os";
-
-import Fuse from "fuse.js";
+import { smithWatermanBased } from "./fuzzy";
+import { Dirent } from "fs";
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (rel === undefined)
           rel = (vscode.workspace.workspaceFolders ?? [])[0]?.uri.fsPath;
-        if (rel === undefined) rel = process.cwd();
+        if (rel === undefined) rel = homedir;
 
         if (!absolute && rel !== undefined)
           // Can't use `path` since `path.join("a/b/", "./.")` is `"a/b"` (strips trailing `/`)
@@ -62,19 +62,30 @@ export function activate(context: vscode.ExtensionContext) {
 
           let sorted = files;
           if (filter !== "") {
-            const fuse = new Fuse(files, {
-              keys: ["name"],
-              includeScore: true,
-              threshold: 1.0,
-              ignoreLocation: true,
-            });
-            sorted = fuse.search(filter).map((x) => x.item);
+            const scored: [Dirent, number][] = files.map((x) => [
+              x,
+              -smithWatermanBased(filter, x.name),
+            ]);
+            scored.sort((a, b) => a[1] - b[1]);
+            sorted = scored.map((x) => x[0]);
           }
 
-          qp.items = sorted.map((x) => ({
-            label: x.isDirectory() ? `${x.name}${path.sep}` : x.name,
-            alwaysShow: true,
-          }));
+          qp.items = (
+            filter === "" || filter === "."
+              ? [
+                  {
+                    label: ".",
+                    description: "Add to workspace",
+                    alwaysShow: true,
+                  },
+                ]
+              : Array<vscode.QuickPickItem>()
+          ).concat(
+            sorted.map((x) => ({
+              label: x.isDirectory() ? `${x.name}${path.sep}` : x.name,
+              alwaysShow: true,
+            }))
+          );
           return;
         }
 
@@ -88,6 +99,21 @@ export function activate(context: vscode.ExtensionContext) {
         if (val.startsWith("~")) val = val.slice(2);
 
         const filterStart = val.lastIndexOf(path.sep) + 1;
+
+        if (label === ".") {
+          let selectedPath = val.slice(0, filterStart);
+          if (rel !== undefined) selectedPath = path.join(rel, selectedPath);
+
+          const folds = vscode.workspace.workspaceFolders;
+          vscode.workspace.updateWorkspaceFolders(
+            folds !== undefined ? folds.length : 0,
+            null,
+            { uri: vscode.Uri.file(selectedPath) }
+          );
+          qp.dispose();
+          return;
+        }
+
         let newPath = val.slice(0, filterStart) + label;
 
         if (!label.endsWith(path.sep)) {
