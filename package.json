@@ -1,6 +1,6 @@
 {
   "name": "open-by-path",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "displayName": "Open by Path",
   "description": "Open a file by typing its path. Supports fuzzy autocomplete.",
   "keywords": [
