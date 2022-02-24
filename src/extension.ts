@@ -17,6 +17,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       let rel: string | undefined;
       const updateItems = async (x: string) => {
+        const wsPaths = new Set(
+          vscode.workspace.workspaceFolders?.map((x) => x.uri.fsPath) ?? []
+        );
+
         const p = path.parse(x);
         x = x.slice(p.root.length);
 
@@ -75,12 +79,21 @@ export function activate(context: vscode.ExtensionContext) {
               ? [
                   {
                     label: ".",
-                    description: "Add to workspace",
+                    description: "Open window",
                     alwaysShow: true,
                   },
                 ]
               : Array<vscode.QuickPickItem>()
           ).concat(
+            !wsPaths.has(subpath)
+              ? [
+                  {
+                    label: ".",
+                    description: "Add to workspace",
+                    alwaysShow: true,
+                  },
+                ]
+              : [],
             sorted.map((x) => ({
               label: x.isDirectory() ? `${x.name}${path.sep}` : x.name,
               alwaysShow: true,
@@ -92,8 +105,9 @@ export function activate(context: vscode.ExtensionContext) {
         qp.items = [];
       };
       qp.onDidChangeValue(updateItems);
-      qp.onDidAccept(() => {
-        const label = qp.selectedItems[0].label;
+      qp.onDidAccept(async () => {
+        const selected = qp.selectedItems[0];
+        const label = selected.label;
         let val = qp.value;
 
         if (val.startsWith("~")) val = val.slice(2);
@@ -104,11 +118,26 @@ export function activate(context: vscode.ExtensionContext) {
           let selectedPath = val.slice(0, filterStart);
           if (rel !== undefined) selectedPath = path.join(rel, selectedPath);
 
+          const uri = vscode.Uri.file(selectedPath);
+
+          if (selected.description === "Open window") {
+            const cmd = vscode.commands.executeCommand(
+              "vscode.openFolder",
+              uri,
+              {
+                forceNewWindow: true,
+              }
+            );
+            qp.dispose();
+            await cmd;
+            return;
+          }
+
           const folds = vscode.workspace.workspaceFolders;
           vscode.workspace.updateWorkspaceFolders(
             folds !== undefined ? folds.length : 0,
             null,
-            { uri: vscode.Uri.file(selectedPath) }
+            { uri }
           );
           qp.dispose();
           return;
