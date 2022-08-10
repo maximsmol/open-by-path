@@ -66,11 +66,16 @@ export function activate(context: vscode.ExtensionContext) {
 
           let sorted = files;
           if (filter !== "") {
-            const scored: [Dirent, number][] = files.map((x) => [
-              x,
-              -smithWatermanBased(filter, x.name),
-            ]);
-            scored.sort((a, b) => a[1] - b[1]);
+            const scored: [Dirent, number][] = [];
+            files.forEach((x) => {
+              const score = smithWatermanBased(filter, x.name);
+              if (score >= 0.2) {
+                scored.push([x, score]);
+              }
+            });
+            scored.sort((a, b) => b[1] - a[1]);
+            // Prints candidates to developer console when uncommented
+            // console.log(scored.map((x) => `${x[1]} ${x[0].name}`).join('\n'))
             sorted = scored.map((x) => x[0]);
           }
 
