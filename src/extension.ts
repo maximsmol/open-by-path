@@ -85,19 +85,17 @@ export function activate(context: vscode.ExtensionContext) {
                 ]
               : Array<vscode.QuickPickItem>()
           ).concat(
-            !wsPaths.has(subpath)
-              ? [
-                  {
-                    label: ".",
-                    description: "Add to workspace",
-                    alwaysShow: true,
-                  },
-                ]
-              : [],
             sorted.map((x) => ({
               label: x.isDirectory() ? `${x.name}${path.sep}` : x.name,
               alwaysShow: true,
-            }))
+            })),
+            wsPaths.has(subpath) ? [] : [
+              {
+                label: ".",
+                description: "Add to workspace",
+                alwaysShow: true,
+              },
+            ]
           );
           return;
         }
