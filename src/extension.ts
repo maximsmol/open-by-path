@@ -110,11 +110,11 @@ export function activate(context: vscode.ExtensionContext) {
 
           if (input === "~") {
             // Expand ~ to home directory
-            items.push({ label: "~/", alwaysShow: true });
+            items.push({ label: "~" + path.sep, alwaysShow: true });
           } else if (input !== "" && inputAsPath.name === "..") {
             // Allow starting directory to be changed
             items.push({
-              label: pathForDisplay(path.join(relative || '', input)),
+              label: path.normalize(input) + path.sep,
               description: SET_RELATIVE_DESCRIPTION,
               alwaysShow: true
             });
