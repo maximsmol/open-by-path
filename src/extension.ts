@@ -17,7 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
       qp.title = "Open by Path";
       qp.placeholder = "Path to open…";
 
-      const homedir = os.homedir();
+      // Prevent vscode from sorting list since we're doing it ourselves
+      (qp as any).sortByLabel = false; // not yet a public api
 
       const homePath = os.homedir();
       const homePrefix = '~';
